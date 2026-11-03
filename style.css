@@ -12,10 +12,6 @@ body{top:0!important}
 .lang-dropdown button{display:flex;align-items:center;gap:8px;padding:10px 14px;border:none;background:transparent;width:100%;text-align:left;color:#3e3932;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s ease}
 .lang-dropdown button:hover{background:#f4efe5;color:#5b4636}
 .lang-dropdown button.active{background:#62654d;color:#fff}
-.lang-flag{display:inline-block;width:18px;height:12px;border-radius:2px;box-shadow:0 0 1px rgba(0,0,0,.5);vertical-align:middle;flex-shrink:0}
-.flag-it{background:linear-gradient(90deg,#009246 33.3%,#fff 33.3%,#fff 66.6%,#ce2b37 66.6%)}
-.flag-en{background:linear-gradient(90deg,#012169 40%,#c8102e 40%,#c8102e 60%,#012169 60%)}
-.flag-de{background:linear-gradient(180deg,#000 33.3%,#d00 33.3%,#d00 66.6%,#ffce00 66.6%)}
-.flag-fr{background:linear-gradient(90deg,#002395 33.3%,#fff 33.3%,#fff 66.6%,#ed2939 66.6%)}
+.lang-flag{display:inline-block;width:18px;height:12px;border-radius:2px;vertical-align:middle;flex-shrink:0;box-shadow:0 0 1px rgba(0,0,0,.4)}
 
 
