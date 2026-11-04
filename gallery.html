@@ -24,7 +24,100 @@
 <img loading='lazy' src='carbonara-cialda.jpg' data-cat='primi' alt='Carbonara gourmet con cialda croccante'>
 <img loading='lazy' src='chef-fiorentina.png' data-cat='carne' alt='Il nostro chef con la Bistecca alla Fiorentina guarnita'>
 </div></main><footer class='footer'><div class='footer-grid'><section><h2>Dove siamo</h2><p><a href='https://www.google.com/maps/search/?api=1&query=Via%20Ostiense%2041%2C%20Roma' target='_blank' rel='noopener noreferrer'>Via Ostiense 41, Roma</a></p><a class='btn secondary' href='https://www.google.com/maps/search/?api=1&query=Via%20Ostiense%2041%2C%20Roma' target='_blank' rel='noopener noreferrer'>Ottieni indicazioni</a></section><section><h2>Orari di apertura</h2><div class='hours'><div><span>Lun–Sab</span><strong>19:00–23:30</strong></div><div><span>Domenica</span><strong>Chiuso</strong></div></div></section><section><h2>Contatti e Social</h2><p><a href='tel:+390657302416'>06 5730 2416</a></p><p><a href='mailto:osteriaquarantuno.41@gmail.com'>osteriaquarantuno.41@gmail.com</a></p><p><a href='https://www.tiktok.com/@osteria.41' target='_blank' rel='noopener noreferrer'>TikTok @osteria.41</a></p></section></div><div class='footer-bottom'>Osteria Quarantuno · Via Ostiense 41 · Roma</div></footer><a class='floating' href='https://www.google.com/maps/reserve/v/dine/c/Px90FsZbLdE?source=pa&opi=79508299&hl=it' target='_blank' rel='noopener noreferrer'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2' ry='2'></rect><line x1='16' y1='2' x2='16' y2='6'></line><line x1='8' y1='2' x2='8' y2='6'></line><line x1='3' y1='10' x2='21' y2='10'></line></svg>Prenota con Google</a><div id='google_translate_element'></div>
-<script>const btns=document.querySelectorAll('.filter-btn');const imgs=document.querySelectorAll('.gallery img');btns.forEach(b=>{b.addEventListener('click',()=>{btns.forEach(x=>x.classList.remove('active'));b.classList.add('active');const cat=b.getAttribute('data-filter');imgs.forEach(img=>{if(cat==='all'||img.getAttribute('data-cat')===cat){img.style.display='block';}else{img.style.display='none';}});});});
+
+<!-- Lightbox Modal per ingrandimento foto -->
+<div id='galleryLightbox' class='lightbox' role='dialog' aria-modal='true' aria-label='Ingrandimento immagine'>
+  <button class='lightbox-close' id='lightboxClose' aria-label='Chiudi (Esc)'>✕</button>
+  <button class='lightbox-nav prev' id='lightboxPrev' aria-label='Foto precedente (Freccia sinistra)'>‹</button>
+  <button class='lightbox-nav next' id='lightboxNext' aria-label='Foto successiva (Freccia destra)'>›</button>
+  <div class='lightbox-content' id='lightboxContent'>
+    <img id='lightboxImg' src='' alt=''>
+    <div class='lightbox-caption' id='lightboxCaption'></div>
+    <div class='lightbox-counter' id='lightboxCounter'></div>
+  </div>
+</div>
+
+<script>
+const btns=document.querySelectorAll('.filter-btn');const imgs=document.querySelectorAll('.gallery img');btns.forEach(b=>{b.addEventListener('click',()=>{btns.forEach(x=>x.classList.remove('active'));b.classList.add('active');const cat=b.getAttribute('data-filter');imgs.forEach(img=>{if(cat==='all'||img.getAttribute('data-cat')===cat){img.style.display='block';}else{img.style.display='none';}});});});
+
+// Lightbox interattivo per la galleria
+(function(){
+  var lightbox = document.getElementById('galleryLightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  var lbCaption = document.getElementById('lightboxCaption');
+  var lbCounter = document.getElementById('lightboxCounter');
+  var btnClose = document.getElementById('lightboxClose');
+  var btnPrev = document.getElementById('lightboxPrev');
+  var btnNext = document.getElementById('lightboxNext');
+  var currentIdx = 0;
+
+  function getVisibleImages(){
+    return Array.from(document.querySelectorAll('.gallery img')).filter(function(img){
+      return img.offsetParent !== null && window.getComputedStyle(img).display !== 'none';
+    });
+  }
+
+  function showImage(idx){
+    var visible = getVisibleImages();
+    if(!visible.length) return;
+    if(idx < 0) idx = visible.length - 1;
+    if(idx >= visible.length) idx = 0;
+    currentIdx = idx;
+
+    var target = visible[idx];
+    lbImg.src = target.src;
+    lbImg.alt = target.alt || '';
+    lbCaption.textContent = target.alt || '';
+    lbCounter.textContent = (idx + 1) + ' / ' + visible.length;
+    lightbox.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(){
+    lightbox.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.gallery img').forEach(function(img){
+    img.addEventListener('click', function(){
+      var visible = getVisibleImages();
+      var idx = visible.indexOf(img);
+      if(idx !== -1) showImage(idx);
+    });
+  });
+
+  if(btnClose) btnClose.addEventListener('click', closeLightbox);
+  if(btnPrev) btnPrev.addEventListener('click', function(e){ e.stopPropagation(); showImage(currentIdx - 1); });
+  if(btnNext) btnNext.addEventListener('click', function(e){ e.stopPropagation(); showImage(currentIdx + 1); });
+
+  if(lightbox){
+    lightbox.addEventListener('click', function(e){
+      if(e.target === lightbox || e.target.id === 'lightboxContent'){
+        closeLightbox();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', function(e){
+    if(!lightbox.classList.contains('show')) return;
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowLeft') showImage(currentIdx - 1);
+    if(e.key === 'ArrowRight') showImage(currentIdx + 1);
+  });
+
+  var touchStartX = 0;
+  lightbox.addEventListener('touchstart', function(e){
+    touchStartX = e.changedTouches[0].screenX;
+  }, {passive:true});
+  lightbox.addEventListener('touchend', function(e){
+    var touchEndX = e.changedTouches[0].screenX;
+    var diff = touchEndX - touchStartX;
+    if(Math.abs(diff) > 45){
+      if(diff > 0) showImage(currentIdx - 1);
+      else showImage(currentIdx + 1);
+    }
+  }, {passive:true});
+})();
 function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'it',includedLanguages:'it,en,de,fr',autoDisplay:false},'google_translate_element');}
 function changeLang(lang){
   var isIt = (lang === 'it');
